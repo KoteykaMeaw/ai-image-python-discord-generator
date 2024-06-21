@@ -23,32 +23,30 @@ last_message_times = {}
 
 COOLDOWN = 5
 
-@bot.event
-async def on_message(message):
-    if message.author != bot.user:
-        user_id = message.author.id
-        if user_id in last_message_times:
-            elapsed_time = time.time() - last_message_times[user_id]
-            if elapsed_time < COOLDOWN:
-                await message.author.send(
-                    f"Пожалуйста, подождите {COOLDOWN - elapsed_time:.1f} секунд перед отправкой следующего запроса.")
-                return
+@bot.tree.command(name='generate', description='Generate an image.')
+async def generate(interaction: discord.Integration, imagedescription: str, width : int, height : int):
+    user_id = interaction.user.id
+    if user_id in last_message_times:
+        elapsed_time = time.time() - last_message_times[user_id]
+        if elapsed_time < COOLDOWN:
+            await interaction.user.send(
+                f"Пожалуйста, подождите {COOLDOWN - elapsed_time:.1f} секунд перед отправкой следующего запроса.")
+            return
 
-            # Обновление времени последнего сообщения
-        last_message_times[user_id] = time.time()
+    last_message_times[user_id] = time.time()
 
-        generatingtext = await message.author.send("Генерирую картинку..")
+    generatingtext = await interaction.user.send("Генерирую картинку..")
 
-        api = lgoic.Text2ImageAPI('https://api-key.fusionbrain.ai/', 'key',
-                            'secret key')
-        model_id = api.get_model()
-        imagename = message.content+".jpg"
-        image = api.generate_and_save_image(message, model_id, imagename)
+    api = lgoic.Text2ImageAPI('https://api-key.fusionbrain.ai/', '846277557559B13E622645DA5AB58748',
+                            '059D5209F8B1ADA3A143688C82563907')
+    model_id = api.get_model()
+    imagename = imagedescription+".jpg"
+    image = api.generate_and_save_image(imagedescription, model_id, imagename,width,height)
 
-        await message.author.send(file=discord.File(imagename))
+    await interaction.user.send(file=discord.File(imagename))
 
-        os.remove(imagename)
-        await generatingtext.delete()
+    os.remove(imagename)
+    await generatingtext.delete()
 
 @bot.tree.command(name='help', description='What this bot does?')
 async def help(interaction: discord.Integration):
