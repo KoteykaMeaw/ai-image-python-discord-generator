@@ -49,8 +49,8 @@ class Text2ImageAPI:
             attempts -= 1
             time.sleep(delay)
 
-    def generate_and_save_image(self, prompt, model_id='default', filename='generated_image.jpg'):
-        uuid = self.generate(prompt, model_id)
+    def generate_and_save_image(self, prompt, model_id='default', filename='generated_image.jpg',height=1024,width=1024):
+        uuid = self.generate(prompt, model_id,1,width,height)
         images = self.check_generation(uuid)[0]
 
         # Декодируем строку Base64 в бинарные данные
