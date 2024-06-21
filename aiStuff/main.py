@@ -37,8 +37,8 @@ async def generate(interaction: discord.Integration, imagedescription: str, widt
 
     generatingtext = await interaction.user.send("Генерирую картинку..")
 
-    api = lgoic.Text2ImageAPI('https://api-key.fusionbrain.ai/', '846277557559B13E622645DA5AB58748',
-                            '059D5209F8B1ADA3A143688C82563907')
+    api = lgoic.Text2ImageAPI('https://api-key.fusionbrain.ai/', 'key',
+                            'secret key')
     model_id = api.get_model()
     imagename = imagedescription+".jpg"
     image = api.generate_and_save_image(imagedescription, model_id, imagename,width,height)
